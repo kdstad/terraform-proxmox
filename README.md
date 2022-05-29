@@ -1,7 +1,6 @@
 # terraform-proxmox
 
 This repo contains the Terraform files for Proxmox.
-It's a more modern way to manage virtual machines on proxmox than my older [vmbuilder](https://github.com/kasperstad/vmbuilder) script
 
 ## Usage
 
