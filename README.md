@@ -9,6 +9,10 @@ This repo contains the Terraform files for Proxmox.
 * Create the template VM (eg. use create_template.sh directly on the server)
 * define the Virtual Machines in *variables.tf* - remember to change the node name...
 
+## legacy/proxmox.sh
+
+This is a older script from before I started using Terraform
+
 ## License
 
 MIT License
