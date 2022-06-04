@@ -11,9 +11,9 @@ This repo contains the Terraform files for Proxmox.
 
 ### virtual_machines arguments
 
-* disk_size: The size of the root disk (default: 10G)
-* sockets: Number of CPU sockets (default: 1)
-* memory: Size of the RAM for the VM (default: 1024)
+* disk_size: The size of the root disk
+* sockets: Number of CPU sockets
+* memory: Size of the RAM for the VM
 * data_disks: List of ekstra disks size
 
 *Eksampel:*

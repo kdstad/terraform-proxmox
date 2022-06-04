@@ -42,6 +42,7 @@ resource "proxmox_vm_qemu" "virtual_machines" {
 	for_each = local.virtual_machines
 
 	name = each.key
+	vmid = try(each.value.vmid, null)
 
 	depends_on = [
 		local_file.cloud_init_user_data
@@ -54,11 +55,11 @@ resource "proxmox_vm_qemu" "virtual_machines" {
 	clone = var.proxmox_template_name
 	
 	cpu = "host"
-	sockets = try(each.value.sockets, 1)
-	memory = try(each.value.memory, "1024")
+	sockets = each.value.sockets
+	memory = each.value.memory
 	
 	disk {
-		size = try(each.value.disk_size, "10G")
+		size = each.value.disk_size
 		type = "scsi"
 		storage = var.proxmox_disk_storage
 		discard = "on"
