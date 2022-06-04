@@ -1,7 +1,7 @@
 locals {
 	virtual_machines = {
-		"server1" = { }
-		"server1" = { disk_size = "20G", sockets = 2, memory = "2048", data_disks = [ "10G", "20GB" ] }
+		"vm1" = { disk_size = "20G", sockets = 2, memory = "2048", data_disks = [ "10G", "20GB" ] }
+		"vm2" = { }
 	}
 }
 
