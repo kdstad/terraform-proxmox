@@ -32,7 +32,7 @@ resource "local_file" "cloud_init_user_data" {
 	for_each = local.virtual_machines
 
 	content = data.template_file.user_data[each.key].rendered
-	filename = "/var/lib/vz/snippets/${each.key}.yml"
+	filename = "${var.proxmox_snippet_dir}/${each.key}.yml"
 
 	file_permission = "0644"
 }
@@ -47,38 +47,38 @@ resource "proxmox_vm_qemu" "virtual_machines" {
 		local_file.cloud_init_user_data
 	]
 
-	cicustom = "user=local:snippets/${each.key}.yml"
+	cicustom = "user=${var.proxmox_snippet_storage}:snippets/${each.key}.yml"
 
 	os_type = "cloud-init"
 	target_node = var.proxmox_node
 	clone = var.proxmox_template_name
 	
 	cpu = "host"
-	sockets = each.value.sockets
-	memory = each.value.memory
+	sockets = try(each.value.sockets, 1)
+	memory = try(each.value.memory, "1024")
 	
 	disk {
-		size = each.value.disk_size
+		size = try(each.value.disk_size, "10G")
 		type = "scsi"
-		storage = "local-lvm"
+		storage = var.proxmox_disk_storage
 		discard = "on"
 	}
 	
 	network {
 		model = "virtio"
-		bridge = "vmbr0"
+		bridge = var.proxmox_network_bridge
 	}
 
 	ipconfig0 = "ip=dhcp"
 
 	dynamic "disk" {
 
-		for_each = each.value.data_disks
+		for_each = try(each.value.data_disks, [])
 
 		content {
 			size = disk.value
 			type = "scsi"
-			storage = "local-lvm"
+			storage = var.proxmox_disk_storage
 			discard = "on"
 		}
 	}
