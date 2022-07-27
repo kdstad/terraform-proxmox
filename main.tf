@@ -31,12 +31,41 @@ provider "proxmox" {
 	pm_tls_insecure = true
 }
 
+data "template_file" "user_data" {
+
+	for_each = local.virtual_machines
+
+	template  = "${file("${path.module}/user_data.cfg")}"
+
+	vars = {
+		ssh_key = var.user_ssh_key
+		hostname = each.key
+	}
+}
+
+resource "local_file" "cloud_init_user_data" {
+
+	for_each = local.virtual_machines
+
+	content = data.template_file.user_data[each.key].rendered
+	filename = "${var.proxmox_snippet_dir}/${each.key}.yml"
+
+	file_permission = "0644"
+	directory_permission = "0755"
+}
+
 resource "proxmox_vm_qemu" "virtual_machines" {
-	
+
 	for_each = local.virtual_machines
 
 	name = each.key
 	vmid = try(each.value.vmid, null)
+
+	depends_on = [
+		local_file.cloud_init_user_data
+	]
+
+	cicustom = "user=${var.proxmox_snippet_storage}:snippets/${each.key}.yml"
 
 	os_type = "cloud-init"
 	target_node = var.proxmox_node
@@ -46,15 +75,13 @@ resource "proxmox_vm_qemu" "virtual_machines" {
 	sockets = try(each.value.sockets, 1)
 	memory = try(each.value.memory, 2048)
 
-	sshkeys = var.user_ssh_key
-	
 	disk {
 		size = each.value.disk_size
 		type = "scsi"
 		storage = try(each.value.disk_storage, var.proxmox_disk_storage)
 		discard = "on"
 	}
-	
+
 	network {
 		model = "virtio"
 		bridge = try(each.value.bridge, var.proxmox_network_bridge)

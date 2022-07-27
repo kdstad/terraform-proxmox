@@ -10,12 +10,21 @@ variable "proxmox_disk_storage" {
 }
 
 variable "proxmox_network_bridge" {
-	default = "vmbr0"
+	default = "vmbr2"
 }
 
 variable "proxmox_node" {
-	default = "proxmox"
+	default = "pve"
 }
+
+variable "proxmox_snippet_dir" {
+	default = "/var/lib/vz/snippets"
+}
+
+variable "proxmox_snippet_storage" {
+	default = "local"
+}
+
 variable "proxmox_template_name" {
 	default = "ubuntu-server-jammy"
 }
