@@ -9,6 +9,14 @@ This repo contains the Terraform files for Proxmox.
 * Create the template VM (eg. use create_template.sh directly on the server)
 * define the Virtual Machines in *variables.tf* - remember to change the node name...
 
+## proxmox api token role
+
+Create a custom role on Proxmox for the API token permission
+
+```
+pveum role add TerraformRole -privs "VM.Allocate VM.Clone VM.Config.CDROM VM.Config.CPU VM.Config.Cloudinit VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Monitor VM.Audit VM.PowerMgmt Datastore.AllocateSpace Datastore.Audit"
+```
+
 ### virtual_machines arguments
 
 * disk_size: The size of the root disk
@@ -16,7 +24,7 @@ This repo contains the Terraform files for Proxmox.
 * memory: Size of the RAM for the VM
 * data_disks: List of ekstra disks size
 
-*Eksampel:*
+*Exampel:*
 
 ```
 "vm1" = { disk_size = "20G", sockets = 2, memory = "2048", data_disks = [ "10G", "20GB" ] }
